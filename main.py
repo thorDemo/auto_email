@@ -21,7 +21,7 @@ message['From'] = Header('宝马会', 'UTF_8')  # 发送者
 message['To'] = Header('<914081010@qq.com>', 'UTF-8')    # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 message['Received'] = 'from msc-channel180022225.sh(100.68.112.227) by smtp.aliyun-inc.com(127.0.0.1);'
-message['Message-ID'] = uuid.uuid4()
+message['Message-ID'] = uuid.uuid4().__str__()
 message['MIME-Version'] = '1.0'
 message['Return-Path'] = 'smtp.jnyhldw.com'
 try:
