@@ -58,7 +58,7 @@ class SMTPError(SMTP):
 def send_message(_temp, _receivers, _domain):
     try:
         _sender = f'service_{random_chars(4)}@{_domain}'
-        content = open('templates/test.html', encoding='utf-8')
+        content = open('templates/type_1.html', encoding='utf-8')
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
         content.close()
         message['Accept-Language'] = "zh-CN"
@@ -75,7 +75,7 @@ def send_message(_temp, _receivers, _domain):
         data = service.sendmail(_sender, _receivers, message.as_string())
         logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
         if _temp % 1 == 0:
-            content = open('templates/test.html', encoding='utf-8')
+            content = open('templates/type_1.html', encoding='utf-8')
             return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
             content.close()
             return_back['Accept-Language'] = "zh-CN"
@@ -112,7 +112,7 @@ def send_message(_temp, _receivers, _domain):
 
 domain = 'jnyhldw.com'
 logging = Logger('send_email.log').get_log()
-file = open('target/111901.txt', 'r', encoding='utf-8')
+file = open('target/test.txt', 'r', encoding='utf-8')
 emails = []
 for line in file:
     emails.append(line.strip())
