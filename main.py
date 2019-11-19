@@ -4,13 +4,35 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
+import logging
+
+
+# 创建日志级别
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# 创建日志文件
+handler_info = logging.FileHandler('info_log.txt')
+handler_info.setLevel(logging.INFO)
+
+handler_warn = logging.FileHandler('warning_log.txt')
+handler_warn.setLevel(logging.WARNING)
+
+# 定义日志格式
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler_info.setFormatter(formatter)
+handler_warn.setFormatter(formatter)
+
+# 添加到日志记录器中
+logger.addHandler(handler_info)
+logger.addHandler(handler_warn)
 
 sender = 'serivces@jnyhldw.com'
 subject = '宝马会礼金大放送'
 receivers = [
     # '914060505@qq.com',
     # '914030606@qq.com',
-    # '914820606@qq.com',
+    'thorhx@gmail.com',
     '914081010@qq.com',
 ]
 content = open('templates/type_1.html', encoding='utf-8')
@@ -29,6 +51,20 @@ try:
     service = smtplib.SMTP('localhost')
     service.sendmail(sender, receivers, message.as_string())
     service.quit()
-    print("邮件发送成功")
-except smtplib.SMTPException as e:
-    print("Error: 无法发送邮件")
+    logging.info(f'{receivers} 发送成功！')
+except smtplib.SMTPServerDisconnected:
+    logging.warning(f'{receivers} 服务器意外断开连接。')
+except smtplib.SMTPSenderRefused:
+    logging.warning(f'{receivers} 发件人地址被拒绝。')
+except smtplib.SMTPRecipientsRefused:
+    logging.warning(f'{receivers} 所有收件人地址均被拒绝。')
+except smtplib.SMTPDataError:
+    logging.warning(f'{receivers} SMTP服务器拒绝接受邮件数据。')
+except smtplib.SMTPConnectError:
+    logging.warning(f'{receivers} 与服务器建立连接期间发生错误。')
+except smtplib.SMTPHeloError:
+    logging.warning(f'{receivers} 服务器拒绝了我们的HELO消息。')
+except smtplib.SMTPNotSupportedError:
+    logging.warning(f'{receivers} 服务器不支持尝试的命令或选项。')
+except smtplib.SMTPAuthenticationError:
+    logging.warning(f'{receivers} 服务器不支持尝试的命令或选项。')
