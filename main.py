@@ -7,9 +7,9 @@ from email.header import Header
 sender = 'serivces@jnyhldw.com'
 subject = '宝马会礼金大放送'
 receivers = [
-    # '914060505@qq.com',
-    # '914030606@qq.com',
-    # '914820606@qq.com',
+    '914060505@qq.com',
+    '914030606@qq.com',
+    '914820606@qq.com',
     '914081010@qq.com',
 ]
 content = open('templates/type_1.html', encoding='utf-8')
