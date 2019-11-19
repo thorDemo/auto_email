@@ -17,10 +17,10 @@ content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
 message['Accept-Language'] = "zh-CN"
 message['Accept-Charset'] = "ISO-8859-1,UTF-8"
-message['From'] = '=?UTF-8?B?5a6d6ams5Lya5aix5LmQ?= <serivces@jnyhldw.com>'   # 发送者
-message['To'] = Header(u'<914081010@qq.com>', 'UTF-8')    # 接收者
+message['From'] = Header('宝马会 <serivces@jnyhldw.com>', 'UTF_8')  # 发送者
+message['To'] = Header('<914081010@qq.com>', 'UTF-8')    # 接收者
 message['Subject'] = Header(subject, 'utf-8')
-
+message['Received'] = Header('serivces@jnyhldw.com (jnyhldw.com [128.14.154.138])', 'UTF_8')
 try:
     service = smtplib.SMTP('localhost')
     service.sendmail(sender, receivers, message.as_string())
