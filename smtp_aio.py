@@ -27,7 +27,7 @@ async def send_email():
     message['MIME-Version'] = '1.0'
     message['Return-Path'] = 'smtp.jnyhldw.com'
 
-    async with SMTP_SSL() as client:
+    async with SMTP() as client:
         try:
             await client.sendmail(sender, receivers, message)
         except ConnectionRefusedError:

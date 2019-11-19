@@ -1,14 +1,60 @@
 # -*- coding: UTF-8 -*-
 import uuid
 import smtplib
+from smtplib import SMTP, _fix_eols, SMTPSenderRefused, SMTPRecipientsRefused, SMTPDataError
 from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
 from mylib.code_logging import Logger
 
+
+class SMTPError(SMTP):
+    def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
+        self.ehlo_or_helo_if_needed()
+        esmtp_opts = []
+        if isinstance(msg, str):
+            msg = _fix_eols(msg).encode('ascii')
+        if self.does_esmtp:
+            if self.has_extn('size'):
+                esmtp_opts.append("size=%d" % len(msg))
+            for option in mail_options:
+                esmtp_opts.append(option)
+        (code, resp) = self.mail(from_addr, esmtp_opts)
+        if code != 250:
+            if code == 421:
+                self.close()
+            else:
+                self._rset()
+            raise SMTPSenderRefused(code, resp, from_addr)
+        senderrs = {}
+        if isinstance(to_addrs, str):
+            to_addrs = [to_addrs]
+        for each in to_addrs:
+            (code, resp) = self.rcpt(each, rcpt_options)
+            if (code != 250) and (code != 251):
+                senderrs[each] = (code, resp)
+            if code == 421:
+                self.close()
+                raise SMTPRecipientsRefused(senderrs)
+        if len(senderrs) == len(to_addrs):
+            # the server refused all our recipients
+            self._rset()
+            raise SMTPRecipientsRefused(senderrs)
+        (code, resp) = self.data(msg)
+        if code != 250:
+            if code == 421:
+                self.close()
+            else:
+                self._rset()
+            raise SMTPDataError(code, resp)
+        # if we got here then somebody got our mail
+        senderrs = (code, resp)
+        return senderrs
+
+
 logging = Logger('send_email.log').get_log()
 sender = 'serivces@jnyhldw.com'
-file = open('target/email_11_11_19_10510.txt', 'r', encoding='utf-8')
+file = open('target/test.txt', 'r', encoding='utf-8')
 temp = 0
 for line in file:
     try:
@@ -24,9 +70,9 @@ for line in file:
         message['Message-ID'] = uuid.uuid4().__str__()
         message['MIME-Version'] = '1.0'
         message['Return-Path'] = 'smtp.jnyhldw.com'
-        service = smtplib.SMTP('localhost')
-        service.sendmail(sender, receivers, message.as_string())
-        service.quit()
+        service = SMTPError('localhost')
+        data = service.sendmail(sender, receivers, message.as_string())
+        print(data)
         temp += 1
         logging.info(f'{receivers} 第 {temp} 封邮件发送成功！')
     except ConnectionRefusedError:
