@@ -14,8 +14,6 @@ receivers = [
 ]
 content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
-message['From'] = Header("宝马会 <serivces@jnyhldw.com>", 'utf-8')   # 发送者
-message['To'] = Header("超级VIP <914081010@qq.com>", 'utf-8')        # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 
 try:
