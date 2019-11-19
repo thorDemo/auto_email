@@ -17,13 +17,12 @@ content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
 message['Accept-Language'] = "zh-CN"
 message['Accept-Charset'] = "ISO-8859-1,UTF-8"
-message['From'] = Header(u' <serivces@jnyhldw.com>', 'UTF-8')   # 发送者
+message['From'] = Header(u'bmh <serivces@jnyhldw.com>', 'UTF-8')   # 发送者
 message['To'] = Header(u'<914081010@qq.com>', 'UTF-8')    # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 
 try:
     service = smtplib.SMTP('localhost')
-    service.helo('serivces@jnyhldw.com')
     service.sendmail(sender, receivers, message.as_string())
     print("邮件发送成功")
 except smtplib.SMTPException as e:
