@@ -113,7 +113,7 @@ emails = []
 for line in file:
     emails.append(line.strip())
 
-pool = ThreadPool(5)
+pool = ThreadPool(1)
 arg = []
 temp = 0
 for email in emails:
