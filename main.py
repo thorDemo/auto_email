@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
 from mylib.code_logging import Logger
+from mylib.random_chars import random_chars
 
 
 class SMTPError(SMTP):
@@ -52,8 +53,9 @@ class SMTPError(SMTP):
         return senderrs
 
 
+domain = 'jnyhldw.com'
 logging = Logger('send_email.log').get_log()
-sender = 'serivces@jnyhldw.com'
+sender = f'service_{random_chars(4)}@{domain}'
 file = open('target/111901.txt', 'r', encoding='utf-8')
 temp = 0
 for line in file:
@@ -63,18 +65,30 @@ for line in file:
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
         message['Accept-Language'] = "zh-CN"
         message['Accept-Charset'] = "ISO-8859-1,UTF-8"
-        message['From'] = encode_header('宝马会娱乐城_赵四测试', sender)
+        message['From'] = encode_header('宝马会娱乐城', sender)
         message['To'] = encode_header('超级VIP客户', receivers)
         message['Subject'] = Header('宝马会礼金大放送', 'utf-8')
-        message['Received'] = 'from msc-channel180022225.sh(100.68.112.227) by smtp.aliyun-inc.com(127.0.0.1);'
+        message['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{domain}(127.0.0.1);'
         message['Message-ID'] = uuid.uuid4().__str__()
         message['MIME-Version'] = '1.0'
-        message['Return-Path'] = 'smtp.jnyhldw.com'
+        message['Return-Path'] = f'smtp.{domain}'
         service = SMTPError('localhost')
         data = service.sendmail(sender, receivers, message.as_string())
         print(data)
         temp += 1
         logging.info(f'{receivers} 第 {temp} 封邮件发送成功！')
+        if temp % 20 == 0:
+            return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
+            return_back['Accept-Language'] = "zh-CN"
+            return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
+            return_back['From'] = encode_header('回测邮件', sender)
+            return_back['To'] = encode_header('超级VIP客户', receivers)
+            return_back['Subject'] = Header(f'{temp}:回测邮件_赵四', 'utf-8')
+            return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{domain}(127.0.0.1);'
+            return_back['Message-ID'] = uuid.uuid4().__str__()
+            return_back['MIME-Version'] = '1.0'
+            return_back['Return-Path'] = 'smtp.jnyhldw.com'
+            data = service.sendmail(sender, '914081010@qq.com', return_back.as_string())
     except ConnectionRefusedError:
         logging.warning(f'{receivers} 无法连接本地服务器。')
     except smtplib.SMTPServerDisconnected:
