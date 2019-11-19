@@ -14,8 +14,10 @@ receivers = [
 ]
 content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
-message['From'] = Header("菜鸟教程", 'utf-8')  # 发送者
-message['To'] = Header("测试", 'utf-8')     # 接收者
+message['Accept-Language'] = "zh-CN"
+message['Accept-Charset'] = "ISO-8859-1,utf-8"
+message['From'] = Header(subject, 'utf-8')    # 发送者
+message['To'] = Header(subject, 'utf-8')    # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 
 try:
