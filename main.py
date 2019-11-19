@@ -10,6 +10,7 @@ from mylib.random_chars import random_chars
 from threadpool import ThreadPool, makeRequests
 from time import sleep
 
+
 class SMTPError(SMTP):
     def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
         self.ehlo_or_helo_if_needed()
@@ -57,8 +58,9 @@ class SMTPError(SMTP):
 def send_message(_temp, _receivers, _domain):
     try:
         _sender = f'service_{random_chars(4)}@{_domain}'
-        content = open('templates/type_1.html', encoding='utf-8')
+        content = open('templates/test.html', encoding='utf-8')
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
+        content.close()
         message['Accept-Language'] = "zh-CN"
         message['Accept-Charset'] = "ISO-8859-1,UTF-8"
         message['From'] = encode_header('宝马会娱乐城', _sender)
@@ -72,8 +74,10 @@ def send_message(_temp, _receivers, _domain):
         service.ehlo()
         data = service.sendmail(_sender, _receivers, message.as_string())
         logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
-        if _temp % 20 == 0:
+        if _temp % 1 == 0:
+            content = open('templates/test.html', encoding='utf-8')
             return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
+            content.close()
             return_back['Accept-Language'] = "zh-CN"
             return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
             return_back['From'] = encode_header('回测邮件', '914081010@qq.com')
