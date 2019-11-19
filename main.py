@@ -25,12 +25,10 @@ message['Message-ID'] = uuid.uuid4().__str__()
 message['MIME-Version'] = '1.0'
 message['Return-Path'] = 'smtp.jnyhldw.com'
 
-
 try:
     service = smtplib.SMTP('localhost')
     service.sendmail(sender, receivers, message.as_string())
     service.quit()
     print("邮件发送成功")
 except smtplib.SMTPException as e:
-
     print("Error: 无法发送邮件")
