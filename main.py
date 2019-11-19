@@ -8,7 +8,7 @@ from mylib.coder import encode_header
 from mylib.code_logging import Logger
 from mylib.random_chars import random_chars
 from threadpool import ThreadPool, makeRequests
-
+from time import sleep
 
 class SMTPError(SMTP):
     def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
@@ -85,6 +85,7 @@ def send_message(_temp, _receivers, _domain):
             return_back['Return-Path'] = f'smtp.{domain}'
             data = service.sendmail(_sender, '914081010@qq.com', return_back.as_string())
             logging.info(f'914081010@qq.com 第 {_temp} 封邮件发送成功！ {data}')
+        sleep(2)
     except ConnectionRefusedError:
         logging.warning(f'{_temp}_{_receivers} 无法连接本地服务器。')
     except smtplib.SMTPServerDisconnected:
