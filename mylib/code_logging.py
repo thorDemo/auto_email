@@ -11,7 +11,7 @@ class Logger(object):
         self.__logger.setLevel(logging.DEBUG)
 
         # 创建一个handler用于写入日志文件
-        file_handler = logging.FileHandler(log_file_name)
+        file_handler = logging.FileHandler(log_file_name, encoding='utf-8')
 
         # 创建一个handler用于输出控制台
         console_handler = logging.StreamHandler()
