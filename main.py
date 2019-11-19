@@ -4,29 +4,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
-import logging
+from mylib.code_logging import Logger
 
-
-# 创建日志级别
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# 创建日志文件
-handler_info = logging.FileHandler('info_log.txt')
-handler_info.setLevel(logging.INFO)
-
-handler_warn = logging.FileHandler('warning_log.txt')
-handler_warn.setLevel(logging.WARNING)
-
-# 定义日志格式
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler_info.setFormatter(formatter)
-handler_warn.setFormatter(formatter)
-
-# 添加到日志记录器中
-logger.addHandler(handler_info)
-logger.addHandler(handler_warn)
-
+logging = Logger('log.txt').get_log()
 sender = 'serivces@jnyhldw.com'
 subject = '宝马会礼金大放送'
 receivers = [
