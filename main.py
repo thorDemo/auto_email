@@ -7,15 +7,15 @@ from email.header import Header
 sender = 'serivces@jnyhldw.com'
 subject = '宝马会礼金大放送'
 receivers = [
-    '914060505@qq.com',
-    '914030606@qq.com',
-    '914820606@qq.com',
+    # '914060505@qq.com',
+    # '914030606@qq.com',
+    # '914820606@qq.com',
     '914081010@qq.com',
 ]
 content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
-message['From'] = "宝马会 <serivces@jnyhldw.com>"  # 发送者
-message['To'] = "超级VIP <914081010@qq.com>", 'utf-8'     # 接收者
+message['From'] = Header("菜鸟教程", 'utf-8')  # 发送者
+message['To'] = Header("测试", 'utf-8')     # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 
 try:
