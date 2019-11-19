@@ -26,7 +26,7 @@ message['Return-Path'] = 'smtp.jnyhldw.com'
 # print(message)
 try:
     service = smtplib.SMTP('localhost')
-    service.sendmail(sender, receivers, message.as_string())
+    service.sendmail(sender, receivers, message.__str__())
     print("邮件发送成功")
 except smtplib.SMTPException as e:
     print(e)
