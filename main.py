@@ -16,8 +16,8 @@ content = open('templates/type_1.html', encoding='utf-8')
 message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
 message['Accept-Language'] = "zh-CN"
 message['Accept-Charset'] = "ISO-8859-1,UTF-8"
-message['From'] = Header(bytes('宝马会娱乐城 <serivces@jnyhldw.com>', encoding='utf-8'), 'utf-8')  # 发送者
-message['To'] = Header(bytes('超级VIP客户 <914081010@qq.com>', encoding='utf-8'), 'utf-8')    # 接收者
+message['From'] = '=?UTF-8?B?5a6d6ams5Lya5aix5LmQ?= <serivces@jnyhldw.com>'  # 发送者
+message['To'] = '914081010@qq.com'    # 接收者
 message['Subject'] = Header(subject, 'utf-8')
 message['Received'] = 'from msc-channel180022225.sh(100.68.112.227) by smtp.aliyun-inc.com(127.0.0.1);'
 message['Message-ID'] = uuid.uuid4().__str__()
