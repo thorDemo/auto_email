@@ -6,7 +6,7 @@ from email.header import Header
 from mylib.coder import encode_header
 from mylib.code_logging import Logger
 
-logging = Logger('log.txt').get_log()
+logging = Logger('send_email.log').get_log()
 sender = 'serivces@jnyhldw.com'
 subject = '宝马会礼金大放送'
 receivers = [
