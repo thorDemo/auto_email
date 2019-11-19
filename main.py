@@ -74,24 +74,25 @@ def send_message(_temp, _receivers, _domain):
         service.ehlo()
         data = service.sendmail(_sender, _receivers, message.as_string())
         logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
-        if _temp % 20 == 0:
-            sleep(2)
-            content = open('templates/type_1.html', encoding='utf-8')
-            return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
-            content.close()
-            return_back['Accept-Language'] = "zh-CN"
-            return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
-            return_back['From'] = encode_header('回测邮件', '914081010@qq.com')
-            return_back['To'] = encode_header('超级VIP客户', _receivers)
-            return_back['Subject'] = Header(f'{_temp}:回测邮件_赵四', 'utf-8')
-            return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
-            return_back['Message-ID'] = uuid.uuid4().__str__()
-            return_back['MIME-Version'] = '1.0'
-            return_back['Return-Path'] = f'smtp.{domain}'
-            data = service.sendmail(_sender, '914081010@qq.com', return_back.as_string())
-            logging.info(f'914081010@qq.com 第 {_temp} 封邮件发送成功！ {data}')
-        else:
-            sleep(2)
+        # if _temp % 20 == 0:
+        #     sleep(3)
+        #     content = open('templates/type_1.html', encoding='utf-8')
+        #     return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
+        #     content.close()
+        #     return_back['Accept-Language'] = "zh-CN"
+        #     return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
+        #     return_back['From'] = encode_header('回测邮件', '914081010@qq.com')
+        #     return_back['To'] = encode_header('超级VIP客户', _receivers)
+        #     return_back['Subject'] = Header(f'{_temp}:回测邮件_赵四', 'utf-8')
+        #     return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
+        #     return_back['Message-ID'] = uuid.uuid4().__str__()
+        #     return_back['MIME-Version'] = '1.0'
+        #     return_back['Return-Path'] = f'smtp.{domain}'
+        #     data = service.sendmail(_sender, '914081010@qq.com', return_back.as_string())
+        #     logging.info(f'914081010@qq.com 第 {_temp} 封邮件发送成功！ {data}')
+        # else:
+        #     sleep(3)
+        sleep(3)
     except ConnectionRefusedError:
         logging.warning(f'{_temp}_{_receivers} 无法连接本地服务器。')
     except smtplib.SMTPServerDisconnected:
