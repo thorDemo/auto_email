@@ -54,7 +54,7 @@ class SMTPError(SMTP):
 
 logging = Logger('send_email.log').get_log()
 sender = 'serivces@jnyhldw.com'
-file = open('target/test.txt', 'r', encoding='utf-8')
+file = open('target/111901.txt', 'r', encoding='utf-8')
 temp = 0
 for line in file:
     try:
