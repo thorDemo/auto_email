@@ -81,9 +81,9 @@ def send_message(_temp, _receivers, _domain, _return_msg):
             content.close()
             return_back['Accept-Language'] = "zh-CN"
             return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
-            return_back['From'] = encode_header(f'{_temp}回测邮件', _sender)
+            return_back['From'] = encode_header(f'{_temp}--{_return_msg}', _sender)
             return_back['To'] = encode_header('超级VIP客户', _receivers)
-            return_back['Subject'] = Header(f'{_temp}_{_return_msg}', 'utf-8')
+            return_back['Subject'] = Header(f'{_temp}--{_return_msg}', 'utf-8')
             return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
             return_back['Message-ID'] = uuid.uuid4().__str__()
             return_back['MIME-Version'] = '1.0'
