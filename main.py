@@ -54,8 +54,9 @@ class SMTPError(SMTP):
         return senderrs
 
 
-def send_message(_temp, _receivers, _sender):
+def send_message(_temp, _receivers, _domain):
     try:
+        _sender = f'service_{random_chars(4)}@{_domain}'
         content = open('templates/type_1.html', encoding='utf-8')
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
         message['Accept-Language'] = "zh-CN"
@@ -63,28 +64,27 @@ def send_message(_temp, _receivers, _sender):
         message['From'] = encode_header('宝马会娱乐城', _sender)
         message['To'] = encode_header('超级VIP客户', _receivers)
         message['Subject'] = Header('宝马会礼金大放送', 'utf-8')
-        message['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{domain}(127.0.0.1);'
+        message['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
         message['Message-ID'] = uuid.uuid4().__str__()
         message['MIME-Version'] = '1.0'
-        message['Return-Path'] = f'smtp.{domain}'
+        message['Return-Path'] = f'smtp.{_domain}'
         service = SMTPError('localhost')
+        service.ehlo()
         data = service.sendmail(_sender, _receivers, message.as_string())
-        print(data)
-        logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！')
+        logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
         if _temp % 20 == 0:
             return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
             return_back['Accept-Language'] = "zh-CN"
             return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
-            return_back['From'] = encode_header('回测邮件', _sender)
+            return_back['From'] = encode_header('回测邮件', '914081010@qq.com')
             return_back['To'] = encode_header('超级VIP客户', _receivers)
             return_back['Subject'] = Header(f'{_temp}:回测邮件_赵四', 'utf-8')
-            return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{domain}(127.0.0.1);'
+            return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
             return_back['Message-ID'] = uuid.uuid4().__str__()
             return_back['MIME-Version'] = '1.0'
-            return_back['Return-Path'] = 'smtp.jnyhldw.com'
+            return_back['Return-Path'] = f'smtp.{domain}'
             data = service.sendmail(_sender, '914081010@qq.com', return_back.as_string())
-            logging.info(f'{_temp}_{_receivers} 第 {_temp} 封邮件发送成功！')
-            print(data)
+            logging.info(f'{_temp}_{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
     except ConnectionRefusedError:
         logging.warning(f'{_temp}_{_receivers} 无法连接本地服务器。')
     except smtplib.SMTPServerDisconnected:
@@ -116,7 +116,7 @@ pool = ThreadPool(5)
 arg = []
 temp = 0
 for email in emails:
-    arg.append(([temp, email, f'service_{random_chars(4)}@{domain}'], None))
+    arg.append(([temp, email, domain], None))
     temp += 1
 
 request = makeRequests(send_message, arg)
