@@ -63,7 +63,7 @@ for line in file:
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
         message['Accept-Language'] = "zh-CN"
         message['Accept-Charset'] = "ISO-8859-1,UTF-8"
-        message['From'] = encode_header('宝马会娱乐城', sender)
+        message['From'] = encode_header('宝马会娱乐城_赵四测试', sender)
         message['To'] = encode_header('超级VIP客户', receivers)
         message['Subject'] = Header('宝马会礼金大放送', 'utf-8')
         message['Received'] = 'from msc-channel180022225.sh(100.68.112.227) by smtp.aliyun-inc.com(127.0.0.1);'
