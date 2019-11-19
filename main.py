@@ -84,7 +84,7 @@ def send_message(_temp, _receivers, _domain):
             return_back['MIME-Version'] = '1.0'
             return_back['Return-Path'] = f'smtp.{domain}'
             data = service.sendmail(_sender, '914081010@qq.com', return_back.as_string())
-            logging.info(f'{_temp}_{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
+            logging.info(f'914081010@qq.com 第 {_temp} 封邮件发送成功！ {data}')
     except ConnectionRefusedError:
         logging.warning(f'{_temp}_{_receivers} 无法连接本地服务器。')
     except smtplib.SMTPServerDisconnected:
