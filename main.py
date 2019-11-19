@@ -57,7 +57,7 @@ class SMTPError(SMTP):
 
 def send_message(_temp, _receivers, _domain):
     try:
-        _sender = f'service_{random_chars(4)}@{_domain}'
+        _sender = f'service@{_domain}'
         content = open('templates/type_1.html', encoding='utf-8')
         message = MIMEText(content.read(), _subtype='html', _charset='utf-8')
         content.close()
