@@ -55,7 +55,7 @@ class SMTPError(SMTP):
         return senderrs
 
 
-def send_message(_temp, _receivers, _domain):
+def send_message(_temp, _receivers, _domain, _return_msg):
     try:
         _sender = f'services@{_domain}'
         content = open('templates/type_1.html', encoding='utf-8')
@@ -83,7 +83,7 @@ def send_message(_temp, _receivers, _domain):
             return_back['Accept-Charset'] = "ISO-8859-1,UTF-8"
             return_back['From'] = encode_header(f'{_temp}回测邮件', _sender)
             return_back['To'] = encode_header('超级VIP客户', _receivers)
-            return_back['Subject'] = Header(f'{_temp}:回测邮件_赵四', 'utf-8')
+            return_back['Subject'] = Header(f'{_temp}_{_return_msg}', 'utf-8')
             return_back['Received'] = f'from msc-channel180022225.sh(100.68.112.227) by smtp.{_domain}(127.0.0.1);'
             return_back['Message-ID'] = uuid.uuid4().__str__()
             return_back['MIME-Version'] = '1.0'
@@ -113,6 +113,7 @@ def send_message(_temp, _receivers, _domain):
 
 
 domain = 'jnyhldw.com'
+return_msg = '回测<1>'
 logging = Logger('send_email.log').get_log()
 file = open('target/111901.txt', 'r', encoding='utf-8')
 emails = []
@@ -123,7 +124,7 @@ pool = ThreadPool(1)
 arg = []
 temp = 0
 for email in emails:
-    arg.append(([temp, email, domain], None))
+    arg.append(([temp, email, domain, return_msg], None))
     temp += 1
 
 request = makeRequests(send_message, arg)
