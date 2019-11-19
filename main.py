@@ -74,7 +74,7 @@ def send_message(_temp, _receivers, _domain):
         service.ehlo()
         data = service.sendmail(_sender, _receivers, message.as_string())
         logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
-        if _temp % 1 == 0:
+        if _temp % 20 == 0:
             sleep(2)
             content = open('templates/type_1.html', encoding='utf-8')
             return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
