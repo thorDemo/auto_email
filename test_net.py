@@ -6,8 +6,8 @@ from email.header import Header
 import uuid
 
 
-true_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-true_socket.bind(('104.164.90.157', 0))
+# true_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# true_socket.bind(('104.164.90.157', 0))
 
 
 class SMTPError(SMTP):
@@ -59,7 +59,7 @@ _sender = 'service@abs114.com'
 _receivers = '914081010@qq.com'
 _domain = 'abs114.com'
 _temp = 1
-service = SMTPError(source_address='104.164.74.244')
+service = SMTPError(host='localhost', source_address=('104.164.74.244', 0))
 content = open('templates/type_1.html', encoding='utf-8')
 return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
 content.close()
