@@ -71,7 +71,6 @@ def send_message(_temp, _receivers, _domain, _return_msg):
         message['MIME-Version'] = '1.0'
         message['Return-Path'] = f'smtp.{_domain}'
         service = SMTPError('localhost')
-        service.ehlo()
         data = service.sendmail(_sender, _receivers, message.as_string())
         logging.info(f'{_receivers} 第 {_temp} 封邮件发送成功！ {data}')
         if _temp % 20 == 0:
