@@ -59,7 +59,7 @@ _sender = 'service@abs114.com'
 _receivers = '914081010@qq.com'
 _domain = 'abs114.com'
 _temp = 1
-service = SMTPError('104.164.74.244')
+service = SMTPError(source_address='104.164.74.244')
 content = open('templates/type_1.html', encoding='utf-8')
 return_back = MIMEText(content.read(), _subtype='html', _charset='utf-8')
 content.close()
