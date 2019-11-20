@@ -71,5 +71,5 @@ class ProxySMTP:
             raise SMTPServerDisconnected('please run connect() first')
 
 
-ps = ProxySMTP('128.14.154.138')
+ps = ProxySMTP('104.164.74.244')
 ps.send_mail('1935940593@qq.com', '')
