@@ -88,5 +88,6 @@ with open('conf/rsaky.pem') as fh:
     message['DKIM-Signature'] = bytes.decode(signature.lstrip(b"DKIM-Signature: "))
     # print(message.as_string())
     data = service.sendmail(_sender, _receivers, message.as_string())
+    service.close()
     logging.info(f'{_receivers} 邮件发送成功！ {data}')
 
