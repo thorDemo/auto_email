@@ -10,7 +10,6 @@ import dkim
 import base64
 
 
-
 class SMTPError(SMTP):
     def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
         self.ehlo_or_helo_if_needed()
