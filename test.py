@@ -81,11 +81,12 @@ with open('conf/rsaky.pem') as fh:
     # print(lines)
     signature = dkim.sign(
         message=message.as_bytes(),
-        selector=base64.b64encode(bytes(DKIM_SELECTOR, encoding='utf-8')),
-        domain=base64.b64encode(bytes(DKIM_DOMAIN, encoding='utf-8')),
+        selector=b's1',
+        domain=b'bmw1984.com',
         privkey=bytes(DKIM_PRIVATE_KEY, encoding='utf-8'),
     )
     message['DKIM-Signature'] = bytes.decode(signature.lstrip(b"DKIM-Signature: "))
+    print(message.as_string())
     data = service.sendmail(_sender, _receivers, message.as_string())
     logging.info(f'{_receivers} 邮件发送成功！ {data}')
 
