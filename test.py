@@ -73,7 +73,7 @@ message['Return-Path'] = f'mail.{_domain}'
 service = SMTPError('localhost')
 # service.ehlo()
 dkim_selector = b's1'
-dkim_domain = b'mail.bmw1984.com'
+dkim_domain = b'bmw1984.com'
 with open('conf/rsaky.pem') as fh:
     DKIM_PRIVATE_KEY = fh.read()
     # lines = re.split(b"\r?\n", bytes(DKIM_PRIVATE_KEY, encoding='utf-8'))
