@@ -55,8 +55,8 @@ class SMTPError(SMTP):
         return senderrs
 
 
-_domain = 'jnyhldw.com'
-_receivers = '914081010@qq.com'
+_domain = 'bmw1984.com'
+_receivers = 'thorhx@gmail.com'
 logging = Logger('send_email.log').get_log()
 _sender = f'service_{random_chars(4)}@{_domain}'
 content = open('templates/type_1.html', encoding='utf-8')
