@@ -39,20 +39,24 @@ class ProxySMTP:
         print(res)
 
     def send_mail(self, _sender, _receivers):
-        self.socket_connect()
+        self.hello()
 
     def hello(self):
-        # self.__ssl_client_Socket.send(b'HELO qq.com\r\n')
-        # res = self._true_socket.recv(1024)
-        # if res:
-        #     data = str(res, encoding='utf-8')
-        #     data = data.split('\r\n')
-        #     for line in data:
-        #         if 'title' in line:
-        #             print(line)
-        # else:
-        #     print(f"visit {0} error")
-        pass
+        self.__ssl_client_Socket = ssl.wrap_socket(
+            self._true_socket,
+            cert_reqs=ssl.CERT_NONE,
+            ssl_version=ssl.PROTOCOL_SSLv23
+        )
+        self.__ssl_client_Socket.connect(('smtp.qq.com', 465))
+        self.__ssl_client_Socket.send(b'HELO qq.com\r\n')
+        res = self._true_socket.recv(1024)
+        if res:
+            data = str(res, encoding='utf-8')
+            data = data.split('\r\n')
+            for line in data:
+                    print(line)
+        else:
+            print(f"visit {0} error")
 
     def send(self, s):
         """Send `s' to the server."""

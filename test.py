@@ -1,12 +1,14 @@
 # -*- coding: UTF-8 -*-
 import uuid
-import smtplib
 from smtplib import SMTP, _fix_eols, SMTPSenderRefused, SMTPRecipientsRefused, SMTPDataError
 from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
 from mylib.code_logging import Logger
 from mylib.random_chars import random_chars
+import dkim
+import base64
+
 
 
 class SMTPError(SMTP):
@@ -70,6 +72,19 @@ message['Message-ID'] = uuid.uuid4().__str__()
 message['MIME-Version'] = '1.0'
 message['Return-Path'] = f'smtp.{_domain}'
 service = SMTPError('localhost')
-service.ehlo()
-data = service.sendmail(_sender, _receivers, message.as_string())
-logging.info(f'{_receivers} 邮件发送成功！ {data}')
+# service.ehlo()
+DKIM_SELECTOR = 's1'
+DKIM_DOMAIN = 'bmw1984.com'
+with open('conf/rsaky.pem') as fh:
+    DKIM_PRIVATE_KEY = fh.read()
+    # lines = re.split(b"\r?\n", bytes(DKIM_PRIVATE_KEY, encoding='utf-8'))
+    # print(lines)
+    signature = dkim.sign(
+        message=message.as_bytes(),
+        selector=base64.b64encode(bytes(DKIM_SELECTOR, encoding='utf-8')),
+        domain=base64.b64encode(bytes(DKIM_DOMAIN, encoding='utf-8')),
+        privkey=bytes(DKIM_PRIVATE_KEY, encoding='utf-8'),
+    )
+    data = service.sendmail(_sender, _receivers, message.as_string())
+    logging.info(f'{_receivers} 邮件发送成功！ {data}')
+

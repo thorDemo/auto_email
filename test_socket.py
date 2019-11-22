@@ -6,10 +6,10 @@ port = 80
 ip = socket.gethostbyname(host)
 address = (ip, port)
 try:
-    local_ip = '209.73.145.170'
+    local_ip = '46.151.157.115'
     print(f'设置本地IP：{local_ip}')
     true_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    true_socket.bind((local_ip, 0))
+    true_socket.bind((local_ip, 50893))
     # s = socket.socket()
     s = true_socket
     s.connect(address)
