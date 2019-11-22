@@ -55,7 +55,7 @@ import base64
 
 
 _domain = 'bmw1984.com'
-_receivers = '914081010@gmail.com'
+_receivers = '914081010@qq.com'
 logging = Logger('send_email.log').get_log()
 _sender = f'service@{_domain}'
 content = open('templates/type_1.html', encoding='utf-8')
