@@ -10,52 +10,52 @@ import dkim
 import base64
 
 
-class SMTPError(SMTP):
-    def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
-        self.ehlo_or_helo_if_needed()
-        esmtp_opts = []
-        if isinstance(msg, str):
-            msg = _fix_eols(msg).encode('ascii')
-        if self.does_esmtp:
-            if self.has_extn('size'):
-                esmtp_opts.append("size=%d" % len(msg))
-            for option in mail_options:
-                esmtp_opts.append(option)
-        (code, resp) = self.mail(from_addr, esmtp_opts)
-        if code != 250:
-            if code == 421:
-                self.close()
-            else:
-                self._rset()
-            raise SMTPSenderRefused(code, resp, from_addr)
-        senderrs = {}
-        if isinstance(to_addrs, str):
-            to_addrs = [to_addrs]
-        for each in to_addrs:
-            (code, resp) = self.rcpt(each, rcpt_options)
-            if (code != 250) and (code != 251):
-                senderrs[each] = (code, resp)
-            if code == 421:
-                self.close()
-                raise SMTPRecipientsRefused(senderrs)
-        if len(senderrs) == len(to_addrs):
-            # the server refused all our recipients
-            self._rset()
-            raise SMTPRecipientsRefused(senderrs)
-        (code, resp) = self.data(msg)
-        if code != 250:
-            if code == 421:
-                self.close()
-            else:
-                self._rset()
-            raise SMTPDataError(code, resp)
-        # if we got here then somebody got our mail
-        senderrs = (code, resp)
-        return senderrs
+# class SMTPError(SMTP):
+#     def sendmail(self, from_addr, to_addrs, msg, mail_options=(), rcpt_options=()):
+#         self.ehlo_or_helo_if_needed()
+#         esmtp_opts = []
+#         if isinstance(msg, str):
+#             msg = _fix_eols(msg).encode('ascii')
+#         if self.does_esmtp:
+#             if self.has_extn('size'):
+#                 esmtp_opts.append("size=%d" % len(msg))
+#             for option in mail_options:
+#                 esmtp_opts.append(option)
+#         (code, resp) = self.mail(from_addr, esmtp_opts)
+#         if code != 250:
+#             if code == 421:
+#                 self.close()
+#             else:
+#                 self._rset()
+#             raise SMTPSenderRefused(code, resp, from_addr)
+#         senderrs = {}
+#         if isinstance(to_addrs, str):
+#             to_addrs = [to_addrs]
+#         for each in to_addrs:
+#             (code, resp) = self.rcpt(each, rcpt_options)
+#             if (code != 250) and (code != 251):
+#                 senderrs[each] = (code, resp)
+#             if code == 421:
+#                 self.close()
+#                 raise SMTPRecipientsRefused(senderrs)
+#         if len(senderrs) == len(to_addrs):
+#             # the server refused all our recipients
+#             self._rset()
+#             raise SMTPRecipientsRefused(senderrs)
+#         (code, resp) = self.data(msg)
+#         if code != 250:
+#             if code == 421:
+#                 self.close()
+#             else:
+#                 self._rset()
+#             raise SMTPDataError(code, resp)
+#         # if we got here then somebody got our mail
+#         senderrs = (code, resp)
+#         return senderrs
 
 
 _domain = 'bmw1984.com'
-_receivers = 'thorhx@gmail.com'
+_receivers = '914081010@gmail.com'
 logging = Logger('send_email.log').get_log()
 _sender = f'service@{_domain}'
 content = open('templates/type_1.html', encoding='utf-8')
@@ -70,7 +70,8 @@ message['Received'] = f'from msc-channel180022225.sh(128.14.154.138) by mail.{_d
 message['Message-ID'] = uuid.uuid4().__str__()
 message['MIME-Version'] = '1.0'
 message['Return-Path'] = f'mail.{_domain}'
-service = SMTPError('localhost')
+service = SMTP('localhost')
+service.debuglevel = 2
 # service.ehlo()
 dkim_selector = b's1'
 dkim_domain = b'bmw1984.com'
