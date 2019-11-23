@@ -43,7 +43,7 @@ class SMTPSocket:
         """
         try:
             temp_data = str(receivers).split('@')
-            self.service = f'smtp.{temp_data[1]}'
+            self.service = f'mx3.{temp_data[1]}'
             temp_data = str(sender).split('@')
             self.client = temp_data[1]
             print((self.service, SMTP_PORT))

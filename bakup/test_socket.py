@@ -27,25 +27,31 @@ import re
 
 """
 # connection
-service_ip = 'smtp.qq.com'
+service_ip = 'mx3.qq.com'
 print(f'connect {service_ip}')
 true_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 true_socket.connect((service_ip, 25))
-# res = true_socket.recv(4096)
-# print(res)
-# data = str(res, encoding='utf-8').split(' ')
-# hello
+res = true_socket.recv(4096)
+print(res, 1)
+data = str(res, encoding='utf-8').split(' ')
+
 request = f"HELO bmw1984.com\r\n"
 print(f'>{request}')
 true_socket.sendall(request.encode("utf-8"))
 res = true_socket.recv(4096)
-print(res)
+print(res, 2)
+
+# request = f"EHLO bmw1984.com\r\n"
+# print(f'>{request}')
+# true_socket.sendall(request.encode("utf-8"))
+# res = true_socket.recv(4096)
+# print(res, 3)
 
 # from
-request = "MAIl. FROM:<admin@bmw1984.com>\r\n"
+request = "MAIl FROM:<admin@bmw1984.com>\r\n"
 true_socket.sendall(request.encode("utf-8"))
 res = true_socket.recv(4096)
-print(res)
+print(res, 4)
 
 # rcpt
 request = "RCPT TO:<9204163032@qq.com>\r\n"
