@@ -104,7 +104,8 @@ class SMTPSocket:
             raise SMTPReplyError(code, msg)
 
     def mail_rcpt(self, receivers):
-        request = f'MAIL FROM:<{receivers}>{CRLF}'
+        request = f'RCPT TO:<{receivers}>{CRLF}'
+        print(f'RCPT TO:<{receivers}>')
         self.socket.sendall(str(request).encode('utf-8'))
         code, msg = self.get_reply()
         if code == 250:
