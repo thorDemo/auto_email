@@ -31,9 +31,9 @@ service_ip = 'smtp.qq.com'
 print(f'connect {service_ip}')
 true_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 true_socket.connect((service_ip, 25))
-res = true_socket.recv(4096)
-print(res)
-data = str(res, encoding='utf-8').split(' ')
+# res = true_socket.recv(4096)
+# print(res)
+# data = str(res, encoding='utf-8').split(' ')
 # hello
 request = f"HELO bmw1984.com\r\n"
 print(f'>{request}')

@@ -46,20 +46,24 @@ class SMTPSocket:
         temp_data = str(receivers).split('@')
         self.client = temp_data[1]
         print((self.service, SMTP_PORT))
-        self.socket = self.socket.connect((self.service, SMTP_PORT))
-        msg = self.socket.recv(4096)
-        print(msg)
+        self.socket.connect((self.service, SMTP_PORT))
         code, msg = self.get_reply()
         if code != 220:
             raise SMTPServerDisconnected(msg)
+        print(0)
         self.hello()
+        print(1)
         self.mail_from(sender)
+        print(2)
         self.mail_rcpt(receivers)
+        print(3)
         self.send_data(message)
+        print(4)
         return ''
 
     def hello(self):
         request = f'helo {self.client}{CRLF}'
+        print(request)
         self.socket.sendall(str(request).encode('utf-8'))
         code, msg = self.get_reply()
         if code == -1 and len(msg) == 0:
@@ -119,10 +123,11 @@ class SMTPSocket:
         msg = self.socket.recv(4096)
         if self.debuglevel > 0:
             print(msg)
-        if msg:
+        if len(msg) > 0:
             data = str(msg).split(' ')
             code = data[0]
             message = data[1]
+            print(-1)
             return int(code), message
         else:
             raise SMTPReplyError
