@@ -44,7 +44,7 @@ class SMTPSocket:
         try:
             temp_data = str(receivers).split('@')
             self.service = f'smtp.{temp_data[1]}'
-            temp_data = str(receivers).split('@')
+            temp_data = str(sender).split('@')
             self.client = temp_data[1]
             print((self.service, SMTP_PORT))
             self.socket.connect((self.service, SMTP_PORT))
@@ -52,7 +52,8 @@ class SMTPSocket:
             if code != 220:
                 self.socket_close()
                 raise SMTPServerDisconnected(msg)
-            self.hello()
+            self.helo()
+            self.ehlo()
             self.mail_from(sender)
             print(2)
             self.mail_rcpt(receivers)
@@ -63,9 +64,23 @@ class SMTPSocket:
         finally:
             self.socket_close()
 
-    def hello(self):
-        request = f'HELO {self.client}{CRLF}'
-        print(request)
+    def ehlo(self):
+        request = f'EHLO {self.client}{CRLF}'
+        print(f'EHLO {self.client}')
+        self.socket.sendall(str(request).encode('utf-8'))
+        code, msg = self.get_reply()
+        if code == -1 and len(msg) == 0:
+            self.socket_close()
+            raise SMTPServerDisconnected
+        if code == 250:
+            return code, msg
+        else:
+            self.socket_close()
+            raise SMTPReplyError(code, msg)
+
+    def helo(self):
+        request = f'HELO {self.service}{CRLF}'
+        print(f'HELO {self.service}')
         self.socket.sendall(str(request).encode('utf-8'))
         code, msg = self.get_reply()
         if code == -1 and len(msg) == 0:
@@ -79,6 +94,7 @@ class SMTPSocket:
 
     def mail_from(self, sender):
         request = f'MAIL FROM:<{sender}>{CRLF}'
+        print(f'MAIL FROM:<{sender}>')
         self.socket.sendall(str(request).encode('utf-8'))
         code, msg = self.get_reply()
         if code == 250:
@@ -127,12 +143,17 @@ class SMTPSocket:
     def get_reply(self):
         msg = self.socket.recv(4096)
         if self.debuglevel > 0:
-            print(msg)
+            data = str(msg, encoding='utf-8').split('\r\n')
+            for line in data:
+                print(line)
         if len(msg) > 0:
-            data = str(msg, encoding='utf-8').split(' ')
-            code = data[0]
-            message = data[1]
-            return int(code), message
+            data = str(msg, encoding='utf-8').split('\r\n')
+            for line in data:
+                if '250 ' in line or '220 ' in line:
+                    temp_data = line.split(' ')
+                    message = temp_data[1]
+                    code = temp_data[0]
+                    return int(code), message
         else:
             self.socket_close()
             raise SMTPReplyError

@@ -2,6 +2,8 @@
   <dictionary name="Thor">
     <words>
       <w>crlf</w>
+      <w>ehelo</w>
+      <w>ehlo</w>
       <w>helo</w>
       <w>maxline</w>
       <w>smtp</w>
