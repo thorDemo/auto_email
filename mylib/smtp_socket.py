@@ -41,37 +41,40 @@ class SMTPSocket:
         :param message:
         :return:
         """
-        temp_data = str(receivers).split('@')
-        self.service = f'smtp.{temp_data[1]}'
-        temp_data = str(receivers).split('@')
-        self.client = temp_data[1]
-        print((self.service, SMTP_PORT))
-        self.socket.connect((self.service, SMTP_PORT))
-        code, msg = self.get_reply()
-        if code != 220:
-            raise SMTPServerDisconnected(msg)
-        print(0)
-        self.hello()
-        print(1)
-        self.mail_from(sender)
-        print(2)
-        self.mail_rcpt(receivers)
-        print(3)
-        self.send_data(message)
-        print(4)
-        return ''
+        try:
+            temp_data = str(receivers).split('@')
+            self.service = f'smtp.{temp_data[1]}'
+            temp_data = str(receivers).split('@')
+            self.client = temp_data[1]
+            print((self.service, SMTP_PORT))
+            self.socket.connect((self.service, SMTP_PORT))
+            code, msg = self.get_reply()
+            if code != 220:
+                self.socket_close()
+                raise SMTPServerDisconnected(msg)
+            self.hello()
+            self.mail_from(sender)
+            print(2)
+            self.mail_rcpt(receivers)
+            print(3)
+            self.send_data(message)
+            print(4)
+            return ''
+        finally:
+            self.socket_close()
 
     def hello(self):
-        request = f'helo {self.client}{CRLF}'
+        request = f'HELO {self.client}{CRLF}'
         print(request)
         self.socket.sendall(str(request).encode('utf-8'))
         code, msg = self.get_reply()
         if code == -1 and len(msg) == 0:
             self.socket_close()
             raise SMTPServerDisconnected
-        if code != 250:
+        if code == 250:
             return code, msg
         else:
+            self.socket_close()
             raise SMTPReplyError(code, msg)
 
     def mail_from(self, sender):
@@ -105,8 +108,10 @@ class SMTPSocket:
                 self.socket_close()
                 return code, msg
             else:
+                self.socket_close()
                 raise SMTPReplyError(code, msg)
         else:
+            self.socket_close()
             raise SMTPReplyError(code, msg)
 
     def socket_close(self):
@@ -124,11 +129,11 @@ class SMTPSocket:
         if self.debuglevel > 0:
             print(msg)
         if len(msg) > 0:
-            data = str(msg).split(' ')
+            data = str(msg, encoding='utf-8').split(' ')
             code = data[0]
             message = data[1]
-            print(-1)
             return int(code), message
         else:
+            self.socket_close()
             raise SMTPReplyError
 
