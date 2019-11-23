@@ -41,6 +41,6 @@ with open('conf/rsaky.pem') as fh:
     # print(message.as_string())
     try:
         data = service.send_mail(_sender, _receivers, message.as_string())
+        logging.info(f'{_receivers} 邮件发送成功！ {data}')
     except Exception:
         print('发送失败')
-    logging.info(f'{_receivers} 邮件发送成功！ {data}')
