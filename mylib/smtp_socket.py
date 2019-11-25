@@ -56,7 +56,9 @@ class SMTPSocket:
             self.helo()
             self.ehlo()
             self.mail_from(sender)
-            self.mail_rcpt(receivers)
+            code, msg = self.mail_rcpt(receivers)
+            if code != 250:
+                return False, code, msg
             status, code, msg = self.send_data(message, dkim_key, dkim_selector, dkim_domain)
             return status, code, msg
         except SMTPException:
@@ -139,7 +141,7 @@ class SMTPSocket:
             return code, msg
         else:
             self.socket_close()
-            raise SMTPReplyError(code, msg)
+            return code, msg
 
     def send_data(self, message, dkim_key=None, dkim_selector=None, dkim_domain=None):
         request = f'DATA{CRLF}'
@@ -189,10 +191,12 @@ class SMTPSocket:
         if len(msg) > 0:
             data = str(msg, encoding='utf-8').split('\r\n')
             for line in data:
-                if line[:4] in ['250 ', '220 ', '354 ', '221 ']:
+                if line[3:4] == ' ':
                     temp_data = line.split(' ')
                     message = temp_data[1]
                     code = temp_data[0]
                     return int(code), message
+            print(data)
+            raise SMTPReplyError
         else:
             raise SMTPReplyError
