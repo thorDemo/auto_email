@@ -13,8 +13,8 @@ file_name = '111901.txt'
 emails = open(f'target/{file_name}', 'r')
 temp = 0
 logging = Logger('send_email.log').get_log()
-mail_box_error = open(f'target/mail_error_{file_name}', 'w')
-mail_box_good = open(f'target/mail_good_{file_name}', 'w')
+mail_box_error = open(f'target/mail_error_{file_name}', 'r+')
+mail_box_good = open(f'target/mail_good_{file_name}', 'r+')
 
 for line in emails:
     if temp % 20 == 0:
@@ -43,7 +43,7 @@ for line in emails:
         else:
             logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
         temp += 1
-        time.sleep(1)
+        time.sleep(5)
 
     _domain = 'bmw1984.com'
     _receivers = line.strip()
@@ -72,5 +72,5 @@ for line in emails:
         logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
         mail_box_error.write(f'{_receivers}\n')
     temp += 1
-    time.sleep(1)
+    time.sleep(5)
 
