@@ -8,10 +8,14 @@ from mylib.code_logging import Logger
 import time
 
 
-emails = open('target/111901.txt')
+file_name = '111901.txt'
+
+emails = open(f'target/{file_name}', 'r')
 temp = 0
 logging = Logger('send_email.log').get_log()
-mail_box = open('target/error', 'w')
+mail_box_error = open(f'target/mail_error_{file_name}', 'w')
+mail_box_good = open(f'target/mail_good_{file_name}', 'w')
+
 for line in emails:
     if temp % 20 == 0:
         _receivers = '914081010@qq.com'
@@ -38,9 +42,8 @@ for line in emails:
             logging.info(f'{_receivers} 邮件发送成功！ {temp, status, code, msg}')
         else:
             logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
-            mail_box.write(f'{_receivers}\n')
         temp += 1
-        time.sleep(3)
+        time.sleep(1)
 
     _domain = 'bmw1984.com'
     _receivers = line.strip()
@@ -58,15 +61,16 @@ for line in emails:
     message['MIME-Version'] = '1.0'
     message['Return-Path'] = f'mail.{_domain}'
     service = SMTPSocket()
-    service.debuglevel = 1
     dkim_key = 'conf/rsaky.pem'
     dkim_selector = 's1'
     dkim_domain = 'bmw1984.com'
     status, code, msg = service.send_mail(_sender, _receivers, message, dkim_key, dkim_selector, dkim_domain)
     if code == 250:
         logging.info(f'{_receivers} 邮件发送成功！ {temp, status, code, msg}')
+        mail_box_good.write(f'{_receivers}\n')
     else:
         logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
+        mail_box_error.write(f'{_receivers}\n')
     temp += 1
-    time.sleep(3)
+    time.sleep(1)
 
