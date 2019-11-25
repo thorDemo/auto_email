@@ -2,9 +2,9 @@
 import socket
 import dns.resolver
 import dkim
-from smtplib import SMTP
-from base64 import b64encode
 from email.mime.text import MIMEText
+from logging import getLogger
+import time
 
 __all__ = ["SMTPException", "SMTPReplyError", "SMTPServerDisconnected", "SMTPSocket"]
 
@@ -36,12 +36,13 @@ class SMTPSocket:
         self.client = object
         self.domain = object
 
-    def send_mail(self, sender, receivers, message, dkim_key=None, dkim_selector=None, dkim_domain=None):
-        # type: (str, str, MIMEText, str, str, str) -> (bool, int, str)
+    def send_mail(self, sender, receivers, message, logging, dkim_key=None, dkim_selector=None, dkim_domain=None):
+        # type: (str, str, MIMEText, getLogger, str, str, str) -> (bool, int, str)
         """
         :param sender :
         :param receivers:
         :param message:
+        :param logging:
         :param dkim_key:
         :param dkim_selector:
         :param dkim_domain:
@@ -52,8 +53,12 @@ class SMTPSocket:
             self.domain = temp_data[1]
             temp_data = str(sender).split('@')
             self.client = temp_data[1]
-            self.socket_connect()
-            self.helo()
+            connect = self.socket_connect()
+            if connect is False:
+                return False, 0, 'mail box not exist!'
+            code, msg = self.helo()
+            if code == 521:
+                return False, 0, msg
             self.ehlo()
             self.mail_from(sender)
             code, msg = self.mail_rcpt(receivers)
@@ -61,12 +66,15 @@ class SMTPSocket:
                 return False, code, msg
             status, code, msg = self.send_data(message, dkim_key, dkim_selector, dkim_domain)
             return status, code, msg
-        except SMTPException:
-            print('error')
-            return False, 0, 'nothing !'
+        except SMTPException as e:
+            return False, 0, e
+        except TimeoutError:
+            return False, 0, 'connect error !'
 
     def socket_connect(self):
         preference, exchange, recode = self.query_mx()
+        if preference == 0:
+            return False
         self.service = exchange
         if self.debuglevel > 0:
             print(f'> Connect: {self.service}')
@@ -75,19 +83,24 @@ class SMTPSocket:
         if code != 220:
             self.socket_close()
             raise SMTPServerDisconnected(msg)
-        return
+        return True
 
     def query_mx(self):
-        mx = dns.resolver.query(self.domain, 'MX')
-        preference = 0
-        exchange = ''
-        recode = []
-        for i in mx:
-            if int(i.preference) > preference:
-                recode.append({i.preference, i.exchange})
-                preference = i.preference
-                exchange = str(i.exchange).strip('.')
-        return preference, exchange, recode
+        try:
+            mx = dns.resolver.query(self.domain, 'MX')
+            preference = 0
+            exchange = ''
+            recode = []
+            for i in mx:
+                if self.debuglevel == 1:
+                    print(i.preference, i.exchange)
+                if int(i.preference) > preference:
+                    recode.append({i.preference, i.exchange})
+                    preference = i.preference
+                    exchange = str(i.exchange).strip('.')
+            return preference, exchange, recode
+        except dns.resolver.NXDOMAIN:
+            return 0, '', []
 
     def ehlo(self):
         request = f'EHLO {self.client}{CRLF}'
@@ -115,6 +128,8 @@ class SMTPSocket:
             raise SMTPServerDisconnected
         if code == 250:
             return code, msg
+        elif code == 521:
+            return code, f'sohu {msg}'
         else:
             self.socket_close()
             raise SMTPReplyError(code, msg)
@@ -190,12 +205,25 @@ class SMTPSocket:
                 print(f'< {line}')
         if len(msg) > 0:
             data = str(msg, encoding='utf-8').split('\r\n')
-            for line in data:
-                if line[3:4] == ' ':
-                    temp_data = line.split(' ')
-                    message = ' '.join(temp_data[1:6])
-                    code = temp_data[0]
-                    return int(code), message
+            if 'sohu' in self.service:
+                for line in data:
+                    if line[3:4] == '-':
+                        temp_data = line.split('-')
+                        message = ' '.join(temp_data[1:8])
+                        code = temp_data[0]
+                        return int(code), message
+                    elif line[3:4] == ' ':
+                        temp_data = line.split(' ')
+                        message = ' '.join(temp_data[1:8])
+                        code = temp_data[0]
+                        return int(code), message
+            else:
+                for line in data:
+                    if line[3:4] == ' ':
+                        temp_data = line.split(' ')
+                        message = ' '.join(temp_data[1:8])
+                        code = temp_data[0]
+                        return int(code), message
             print(data)
             raise SMTPReplyError
         else:
