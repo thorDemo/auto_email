@@ -4,7 +4,6 @@ from email.mime.text import MIMEText
 from email.header import Header
 from mylib.coder import encode_header
 from mylib.code_logging import Logger
-import dkim
 
 _domain = 'bmw1984.com'
 _receivers = '914081010@qq.com'
@@ -23,24 +22,9 @@ message['Message-ID'] = uuid.uuid4().__str__()
 message['MIME-Version'] = '1.0'
 message['Return-Path'] = f'mail.{_domain}'
 service = SMTPSocket()
-service.debuglevel = 1
-# service.ehlo()
-dkim_selector = b's1'
-dkim_domain = b'bmw1984.com'
-with open('conf/rsaky.pem') as fh:
-    DKIM_PRIVATE_KEY = fh.read()
-    # lines = re.split(b"\r?\n", bytes(DKIM_PRIVATE_KEY, encoding='utf-8'))
-    # print(lines)
-    signature = dkim.sign(
-        message=message.as_bytes(),
-        selector=dkim_selector,
-        domain=dkim_domain,
-        privkey=bytes(DKIM_PRIVATE_KEY, encoding='utf-8'),
-    )
-    message['DKIM-Signature'] = bytes.decode(signature.lstrip(b"DKIM-Signature: "))
-    # print(message.as_string())
-    try:
-        data = service.send_mail(_sender, _receivers, message.as_string())
-        logging.info(f'{_receivers} 邮件发送成功！ {data}')
-    except Exception:
-        print('发送失败')
+dkim_key = 'conf/rsaky.pem'
+dkim_selector = 's1'
+dkim_domain = 'bmw1984.com'
+status, code, msg = service.send_mail(_sender, _receivers, message, dkim_key, dkim_selector, dkim_domain)
+logging.info(f'{_receivers} 邮件发送成功！ {status, code, msg}')
+

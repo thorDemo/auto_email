@@ -2,6 +2,8 @@
   <dictionary name="Thor">
     <words>
       <w>crlf</w>
+      <w>dkim</w>
+      <w>dkmi</w>
       <w>ehelo</w>
       <w>ehlo</w>
       <w>helo</w>

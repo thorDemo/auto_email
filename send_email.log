@@ -9,3 +9,9 @@
 2019-11-19 19:07:34,580 - mylib.code_logging - WARNING - 1_549086748@qq.com 无法连接本地服务器。
 2019-11-19 19:07:34,583 - mylib.code_logging - WARNING - 3_2351948295@qq.com 无法连接本地服务器。
 2019-11-22 19:21:20,175 - mylib.code_logging - INFO - 914081010@qq.com 邮件发送成功！ {}
+2019-11-25 10:32:03,017 - mylib.code_logging - INFO - 914081010@qq.com 邮件发送成功！ 
+2019-11-25 10:56:12,381 - mylib.code_logging - INFO - thorhx@gmail.com 邮件发送成功！ 
+2019-11-25 11:21:31,427 - mylib.code_logging - INFO - thorhx@gmail.com 邮件发送成功！ True
+2019-11-25 11:21:47,752 - mylib.code_logging - INFO - thorhx@gmail.com 邮件发送成功！ True
+2019-11-25 11:23:12,814 - mylib.code_logging - INFO - 914081010@qq.com 邮件发送成功！ True
+2019-11-25 11:29:59,955 - mylib.code_logging - INFO - 914081010@qq.com 邮件发送成功！ (True, 250, 'Ok:')
