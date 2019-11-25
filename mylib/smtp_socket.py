@@ -193,7 +193,7 @@ class SMTPSocket:
             for line in data:
                 if line[3:4] == ' ':
                     temp_data = line.split(' ')
-                    message = ' '.join(temp_data[1:])
+                    message = ' '.join(temp_data[1:3])
                     code = temp_data[0]
                     return int(code), message
             print(data)

@@ -38,11 +38,11 @@ for line in emails:
         dkim_domain = 'bmw1984.com'
         status, code, msg = service.send_mail(_sender, _receivers, message, dkim_key, dkim_selector, dkim_domain)
         if code == 250:
-            logging.info(f'{_receivers} 邮件发送成功！ {temp, status, code, msg}')
             delay_time = 5
+            logging.info(f'{_receivers} 邮件发送成功！延时{delay_time} {temp, status, code, msg}')
         else:
-            logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
             delay_time += 3
+            logging.warning(f'{_receivers} 邮件发送失败！延时{delay_time} {temp, status, code, msg}')
         temp += 1
         time.sleep(delay_time)
 
@@ -67,14 +67,14 @@ for line in emails:
     dkim_domain = 'bmw1984.com'
     status, code, msg = service.send_mail(_sender, _receivers, message, dkim_key, dkim_selector, dkim_domain)
     if code == 250:
-        logging.info(f'{_receivers} 邮件发送成功！ {temp, status, code, msg}')
         delay_time = 5
+        logging.info(f'{_receivers} 邮件发送成功！延时{delay_time} {temp, status, code, msg}')
         mail_box_good = open(f'target/mail_good_{file_name}', 'r+')
         mail_box_good.write(f'{_receivers}\n')
         mail_box_good.close()
     else:
-        logging.warning(f'{_receivers} 邮件发送失败！ {temp, status, code, msg}')
         delay_time += 3
+        logging.warning(f'{_receivers} 邮件发送失败！延时{delay_time} {temp, status, code, msg}')
         mail_box_error = open(f'target/mail_error_{file_name}', 'r+')
         mail_box_error.write(f'{_receivers}\n')
         mail_box_error.close()
