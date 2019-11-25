@@ -8,6 +8,7 @@
       <w>ehlo</w>
       <w>helo</w>
       <w>maxline</w>
+      <w>rsaky</w>
       <w>smtp</w>
     </words>
   </dictionary>
